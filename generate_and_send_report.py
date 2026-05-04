@@ -1,3 +1,4 @@
+import getpass
 import json
 import os
 import re
@@ -689,6 +690,11 @@ def load_config(path: Path) -> dict:
         val = os.environ.get(env_key)
         if val:
             cfg[cfg_key] = val.split(",") if cfg_key == "to_emails" else val
+
+    # 비밀번호가 config·환경변수 어디에도 없으면 터미널에서 입력
+    if not cfg.get("smtp_password"):
+        cfg["smtp_password"] = getpass.getpass("Gmail 앱 비밀번호 입력: ")
+
     cfg.setdefault("smtp_server",    "smtp.gmail.com")
     cfg.setdefault("smtp_port",      587)
     cfg.setdefault("use_tls",        True)
