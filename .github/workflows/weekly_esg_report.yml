@@ -1,9 +1,9 @@
-name: ESG 주간 동향 리포트 자동 발송
+name: ESG Weekly Report
 
 on:
   schedule:
-    - cron: '0 0 * * 6'  # 매주 토요일 09:00 KST (UTC 00:00)
-  workflow_dispatch:       # GitHub에서 수동 테스트 실행 가능
+    - cron: '0 0 * * 6'  # Every Saturday 09:00 KST (UTC 00:00)
+  workflow_dispatch:
 
 jobs:
   generate-and-send:
