@@ -87,8 +87,8 @@ def get_week_info():
 
 
 # ── Gemini API ─────────────────────────────────────────────────────────────────
-def generate_esg_report(week_label: str, date_range: str) -> dict:
-    client = genai.Client(api_key=os.environ["GOOGLE_API_KEY"])
+def generate_esg_report(week_label: str, date_range: str, api_key: str) -> dict:
+    client = genai.Client(api_key=api_key)
     prompt = f"""당신은 S&C 행정사 사무소의 ESG 경영지도 심사위원입니다.
 검색기간 {date_range} ({week_label}) 기준 ESG 주간 동향 리포트를 작성해주세요.
 이 리포트는 ESG 경영지도 심사위원 활동을 위한 자료로, 국내외 ESG 정책·기업·시장 동향을 전문적으로 다룹니다.
@@ -681,10 +681,11 @@ def load_config(path: Path) -> dict:
         with path.open(encoding="utf-8") as f:
             cfg = json.load(f)
     for env_key, cfg_key in [
-        ("SMTP_PASSWORD", "smtp_password"),
-        ("SMTP_USERNAME", "smtp_username"),
-        ("FROM_EMAIL",    "from_email"),
-        ("TO_EMAILS",     "to_emails"),
+        ("GOOGLE_API_KEY", "google_api_key"),
+        ("SMTP_PASSWORD",  "smtp_password"),
+        ("SMTP_USERNAME",  "smtp_username"),
+        ("FROM_EMAIL",     "from_email"),
+        ("TO_EMAILS",      "to_emails"),
     ]:
         val = os.environ.get(env_key)
         if val:
@@ -736,8 +737,12 @@ def main() -> None:
     week_label, date_display, vol_str, date_range, week_num, next_label = get_week_info()
     config = load_config(Path("esg_email_config.json"))
 
-    print("Claude가 ESG 리포트 생성 중...")
-    report_data = generate_esg_report(week_label, date_range)
+    api_key = config.get("google_api_key") or os.environ.get("GOOGLE_API_KEY")
+    if not api_key:
+        raise RuntimeError("GOOGLE_API_KEY가 설정되지 않았습니다. esg_email_config.json 또는 환경변수를 확인하세요.")
+
+    print("Gemini가 ESG 리포트 생성 중...")
+    report_data = generate_esg_report(week_label, date_range, api_key)
 
     pdf_path = Path(f"ESG_주간동향리포트_{week_label}.pdf")
     print("PDF 생성 중...")
