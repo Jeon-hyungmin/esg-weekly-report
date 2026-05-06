@@ -1,0 +1,14 @@
+{
+  "smtp_server": "smtp.gmail.com",
+  "smtp_port": 587,
+  "smtp_username": "your-email@gmail.com",
+  "smtp_password": "",
+  "use_tls": true,
+  "use_ssl": false,
+  "from_email": "your-email@gmail.com",
+  "from_name": "ESG 보고서 발신",
+  "to_emails": ["recipient@example.com"],
+  "cc_emails": [],
+  "subject_prefix": "[ESG 주간 동향]",
+  "body_intro": "안녕하세요,\n\n이번 주 ESG 주간동향 리포트를 첨부합니다."
+}
